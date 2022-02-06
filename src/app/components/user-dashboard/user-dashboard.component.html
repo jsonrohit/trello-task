@@ -1,0 +1,114 @@
+<div class="bg-img">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2 offset-md-10 my-5">
+                <button mat-raised-button color="primary" (click)="addUser(userform)">Add New User</button>
+            </div>
+        </div>
+        <div class="row my-2" *ngIf="userArray.length>0 else ref" cdkDropListGroup>
+            <div class="col-md-4" *ngFor="let user of userArray; let i = index">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <h2 class="card-title">{{user.username}}</h2>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <mat-icon (click)="editUser(i,userform)">edit</mat-icon>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <mat-icon (click)="deleteUserConformationModel(i,delUser)">delete</mat-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div cdkDropList [cdkDropListData]="user.task" (cdkDropListDropped)="drop($event)">
+                            <div class="row border" *ngFor="let task of user.task; let j = index" cdkDrag>
+                                <div class="col-md-9">
+                                    <h3>{{task.name}}</h3>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="editTask">
+                                        <mat-icon (click)="editTask(i,j,tastform)">edit</mat-icon>
+                                        <mat-icon (click)="deleteTask(i,task)">delete</mat-icon>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <mat-icon (click)="addTask(user,tastform)" class="m-auto">add_circle_outline</mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-template #ref>
+            <div class="row text-center ">
+                <div class="card py-5 my-3 bg-secondary">
+                    <h1 class="text-white">Trello</h1>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+</div>
+
+
+<!--task Modal -->
+<ng-template #tastform let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Task</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <form #addtaskform="ngForm" (ngSubmit)="addTaskForm(addtaskform)">
+        <div class="modal-body">
+            <input type="text" class="form-control mb-3" [(ngModel)]="taskData.taskname" name="taskname"
+                placeholder="Enter Taskname" required>
+            <input type="text" class="form-control" [ngModel]="TaskActionType" name="TaskActionType" hidden>
+            <button mat-raised-button color="primary" (click)="modal.close('Save click')" [disabled]="!addtaskform.valid">Submit</button>
+        </div>
+    </form>
+</ng-template>
+
+
+
+<!--user Modal -->
+<ng-template #userform let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">User</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <form #adduserform="ngForm" (ngSubmit)="addUserForm(adduserform)">
+        <div class="modal-body">
+            <input type="text" class="form-control mb-3" [(ngModel)]="userData.username" name="username"
+                placeholder="Enter Username" required>
+            <input type="text" class="form-control" [ngModel]="actionType" name="actionType" hidden>
+            <button mat-raised-button color="primary" (click)="modal.close('Save click')" [disabled]="!adduserform.valid">Submit</button>
+        </div>
+    </form>
+</ng-template>
+
+
+<!-- delete Confirmation model -->
+<ng-template #delUser let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Confirmation</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('false')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure to delete this?</p>
+    </div>
+    <div class="modal-footer">
+        <button mat-raised-button color="primary" (click)="deleteUser(); c(true);">Yes</button>
+        <button mat-raised-button color="warn" (click)="deleteCancel();d('false')">Cancel</button>
+    </div>
+</ng-template>
